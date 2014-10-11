@@ -1,0 +1,45 @@
+(ns cryptopals.str-vec-utils)
+
+;  (:import java.io.File)
+;  (:require [clojure.java.io :as io]
+;            [ez-image.core :as ez-image]
+;            [me.raynes.fs :as fs])
+;  (:import [java.io File]
+;           [javax.imageio ImageIO]))
+
+(defn hex-str->vec
+  [hex-str]
+  (vec 
+   (for [[x y] (partition 2 hex-str)]
+     (Integer/parseInt (str x y) 16))))
+
+(defn vec->hex-str
+  [byte-vec]
+  (apply str
+         (map #(format "%02x" (int %)) byte-vec)))
+
+(defn vec->str
+  [v]
+  (apply str (map char v))) 
+
+(defn str->vec
+  [s]
+  (vec (for [c s]
+         (int c))))
+
+(defn base64-decode
+  [s]
+  s)
+
+(defn base64-encode
+  [s]
+  s)
+
+(defn vec-score
+  [v]
+  (count (filter #(or
+                   (and (> % 0x30) (< % 0x39))
+                   (and (> % 0x41) (< % 0x5a))
+                   (and (> % 0x61) (< % 0x7a))
+                   (= % 0x20))
+                 v)))
