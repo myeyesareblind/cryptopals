@@ -1,0 +1,11 @@
+(ns cryptopals.aes
+  (:import [javax.crypto.Cipher]))
+
+
+(defn aes-decrypt
+  [enc-data key algo-string]
+  (let [cipher (Cipher/getInstance algo-string)
+        cipher-key (SecretKeySpec/getInstance key "AES")]
+    (.init cipher Cipher/ENCRYPT_MODE cipher-key)
+    (.doFinal cipher enc-data)))
+       

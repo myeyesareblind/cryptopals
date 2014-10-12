@@ -1,11 +1,6 @@
-(ns cryptopals.str-vec-utils)
-
-;  (:import java.io.File)
-;  (:require [clojure.java.io :as io]
-;            [ez-image.core :as ez-image]
-;            [me.raynes.fs :as fs])
-;  (:import [java.io File]
-;           [javax.imageio ImageIO]))
+(ns cryptopals.strutils
+  (:import [org.apache.commons.codec.binary Base64]
+           [org.apache.commons.codec.binary StringUtils]))
 
 (defn hex-str->vec
   [hex-str]
@@ -29,11 +24,11 @@
 
 (defn base64-decode
   [s]
-  s)
+  (StringUtils/newStringUtf8 (Base64/decodeBase64 s)))
 
 (defn base64-encode
   [s]
-  s)
+  (Base64/encodeBase64String (StringUtils/getBytesUtf8 s)))
 
 (defn vec-score
   [v]

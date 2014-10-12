@@ -15,26 +15,27 @@
 
 (defn vec->str
   [v]
-  (apply str (map char v))) 
+  (String. (byte-array v) "US-ASCII"))
 
 (defn str->vec
   [s]
-  (vec (for [c s]
-         (int c))))
+  (vec (.getBytes s "US-ASCII")))
 
 (defn base64-decode
   [s]
-  (StringUtils/newStringUtf8 (Base64/decodeBase64 s)))
+  (Base64/decodeBase64 s))
 
 (defn base64-encode
-  [s]
-  (Base64/encodeBase64String (StringUtils/getBytesUtf8 s)))
+  [v]
+  (Base64/encodeBase64String (byte-array v)))
 
 (defn vec-score
   [v]
   (count (filter #(or
-                   (and (> % 0x30) (< % 0x39))
-                   (and (> % 0x41) (< % 0x5a))
-                   (and (> % 0x61) (< % 0x7a))
-                   (= % 0x20))
+                   (and (>= % 0x30) (<= % 0x39))
+                   (and (>= % 0x41) (<= % 0x5a))
+                   (and (>= % 0x61) (<= % 0x7a))
+                   (and (>= % 0x2c) (<= % 0x2e))
+                   (= % 0x20)
+                   (= % 0x13))
                  v)))

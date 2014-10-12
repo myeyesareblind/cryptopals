@@ -2,7 +2,8 @@
   (:use [clojure.java.io])
   (:require [cryptopals.strutils :as svu]
             [cryptopals.vecutils :as vu]
-            [cryptopals.sequtils :as sequ]))
+            [cryptopals.sequtils :as sequ]
+            [cryptopals.aes :as aes]))
 
 (defn detect-single-char-xor
   [v]
@@ -39,8 +40,6 @@ I go crazy when I hear a cymbal"
        v2 (svu/str->vec s2)]
    (vu/vec-hamm-dist v1 v2))
  
-(svu/base64-decode (svu/base64-encode "sfdkjhkjhsafdafskjh"))
- 
 (defn challenge-6
   []
   (let [enc-data (svu/str->vec (svu/base64-decode (slurp "/Users/myeyesareblind/Downloads/6.txt")))]
@@ -51,20 +50,13 @@ I go crazy when I hear a cymbal"
                                (let [sub-vecs (sequ/sub-vectors-with-key-len enc-data klen)
                                      keys (vec (for [v sub-vecs] (detect-single-char-xor v)))
                                      dec-vec (vu/vec-xor-vec enc-data keys)]
-                                 {:original dec-vec, :score (svu/vec-score dec-vec)}))]
-        (let [best-decrypt (reduce #(if (> (%1 :original)
-                                                (%2 :original))
-                                                %1 %2) decrypt-variants)]
-          (println (svu/vec->str (best-decrypt :original)))))))
-          
-                     
+                                 dec-vec))]
+        (let [best-decrypt (reduce #(if (> (svu/vec-score %1)
+                                           (svu/vec-score %2))
+                                      %1 %2) decrypt-variants)]
+          (println (svu/vec->str best-decrypt)))))))
 
-        
-(defn       
-
-;  (:import java.io.File)
-;  (:require [clojure.java.io :as io]
-;            [ez-image.core :as ez-image]
-;            [me.raynes.fs :as fs])
-;  (:import [java.io File]
-;           [javax.imageio ImageIO]))
+(defn challenge-7
+  []
+  (let [enc-data (slurp "/Users/myeyesareblind/Downloads/7.txt")]
+    (println (svu/base64-decode (aes/aes-decrypt enc-data "YELLOW SUBMARINE" "AES/ECB/NoPadding"))))
