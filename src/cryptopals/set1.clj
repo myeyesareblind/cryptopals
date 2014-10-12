@@ -25,24 +25,18 @@
         (def best line)))
     (svu/vec->str (detect-single-char-xor best))))
 
-(def challenge-5
+(defn challenge-5
   []
   (let [s "Burning 'em, if you ain't quick and nimble
 I go crazy when I hear a cymbal"
         k "ICE"
         v-s (svu/str->vec s)
         v-k (svu/str->vec k)]
-    (println (svu/vec->hex-str (vu/vec-xor-vec v-s v-k))))
+    (println (svu/vec->hex-str (vu/vec-xor-vec v-s v-k)))))
 
- (let [s1 "this is a test"
-       s2 "wokka wokka!!!"
-       v1 (svu/str->vec s1)
-       v2 (svu/str->vec s2)]
-   (vu/vec-hamm-dist v1 v2))
- 
 (defn challenge-6
   []
-  (let [enc-data (svu/str->vec (svu/base64-decode (slurp "/Users/myeyesareblind/Downloads/6.txt")))]
+  (let [enc-data (svu/base64-decode (slurp "/Users/myeyesareblind/Downloads/6.txt"))]
     (let [map-klen-hamm-dist (reduce #(assoc %1 %2 (vu/count-aprox-hamm-dist enc-data %2)) {} (range 2 41))
           mins (cryptopals.sequtils/min-vals-in-map map-klen-hamm-dist 5)]
       (println mins)
@@ -58,5 +52,28 @@ I go crazy when I hear a cymbal"
 
 (defn challenge-7
   []
-  (let [enc-data (slurp "/Users/myeyesareblind/Downloads/7.txt")]
-    (println (svu/base64-decode (aes/aes-decrypt enc-data "YELLOW SUBMARINE" "AES/ECB/NoPadding"))))
+  (let [enc-data (svu/base64-decode (slurp "/Users/myeyesareblind/Downloads/7.txt"))]
+    (println (vec enc-data))
+    (println (svu/vec->str (aes/aes-decrypt enc-data (.getBytes "YELLOW SUBMARINE" "US-ASCII") "AES/ECB/PKCS5Padding")))))
+
+
+(defn challenge-8
+  []
+  (let [s (slurp "/Users/myeyesareblind/Downloads/8.txt")
+        linexs (vec (.split s "\n"))
+        line-bytexs (for [line linexs]
+                      (svu/hex-str->vec line))]
+    (let [list-n-occurances 
+          (for [line-byte line-bytexs]
+            (let [sub-line-bytes (partition-all 16 line-byte)]
+              (loop [sub-line-bytes sub-line-bytes
+                     r {}]
+                (if (empty? sub-line-bytes)
+                  (reduce #(if (> (second %1) (second %2)) %1 %2) r)
+                  (let [line (first sub-line-bytes)]
+                    (recur (rest sub-line-bytes)
+                           (assoc r line (if (r line)
+                                           (inc (r line))
+                                           1))))))))]
+      (println (svu/vec->hex-str (first (reduce (fn [m1 m2]
+                         (if (> (second m1) (second m2)) m1 m2)) list-n-occurances)))))))

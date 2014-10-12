@@ -33,14 +33,3 @@
       (if (empty? part)
         r
         (recur (rest (rest part)) (ham-dist (first part) (second part)))))))
-
-(defn split-vec
-  [vec klen]
-  (let [r (for [i (range klen)]
-            [])
-        vec-len (count vec)]
-    (doseq [v vec i (range vec-len)]
-      (conj (get r (rem i klen)) v))
-    r))
-      
-      
