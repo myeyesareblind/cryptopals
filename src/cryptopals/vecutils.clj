@@ -1,14 +1,22 @@
 (ns cryptopals.vecutils)
 
-(defn vec-xor-vec 
-  [x y]
-  (vec (let [nx (count x)
-             ny (count y)]
+(defn seq-xor-seq
+  [x y count-fn get-fn]
+  (vec (let [nx (count-fn x)
+             ny (count-fn y)]
          (for [i (range (max nx ny))]
            (bit-xor
-            (get x (rem i nx))
-            (get y (rem i ny)))))))
+            (get-fn x (rem i nx))
+            (get-fn y (rem i ny)))))))
 
+(defn bytear-xor-bytear
+  [x y]
+  (byte-array (seq-xor-seq x y alength aget)))
+
+(defn vec-xor-vec 
+  [x y]
+  (seq-xor-seq x y count get))
+  
 (defn ham-dist
   ([x y] 
      (if (coll? x)
@@ -33,3 +41,21 @@
       (if (empty? part)
         r
         (recur (rest (rest part)) (ham-dist (first part) (second part)))))))
+
+(defn sub-vectors-with-key-len
+  [vec klen]
+  (let [veclen (count vec)
+        listr (for [vidx (range klen)]
+                (loop [i vidx
+                       r []]
+                  (if (>= i veclen)
+                    r
+                    (recur (+ i klen) (conj r (get vec i))))))]
+    listr))
+
+(defn PKCS7-pad
+  [v to-len]
+  (if (>= (count v) to-len)
+    v
+    (concat v (repeat (- to-len (count v))
+                      (- to-len (count v))))))

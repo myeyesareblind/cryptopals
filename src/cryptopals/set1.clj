@@ -56,7 +56,6 @@ I go crazy when I hear a cymbal"
     (println (vec enc-data))
     (println (svu/vec->str (aes/aes-decrypt enc-data (.getBytes "YELLOW SUBMARINE" "US-ASCII") "AES/ECB/PKCS5Padding")))))
 
-
 (defn challenge-8
   []
   (let [s (slurp "/Users/myeyesareblind/Downloads/8.txt")

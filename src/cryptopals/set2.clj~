@@ -1,0 +1,11 @@
+(ns cryptopals.set1
+  (:use [clojure.java.io]
+        [cryptopals.strutils]
+        [cryptopals.vecutils]
+        [cryptopals.sequtils]
+        [cryptopals.aes]))
+
+(defn challenge-10
+  []
+  (let [enc-data (str->vec (slurp "/Users/myeyesareblind/Downloads/10.txt"))]
+    (println (vec->str (aes-crypto-cbc enc-data (str->vec "YELLOW SUBMARINE") false)))))
