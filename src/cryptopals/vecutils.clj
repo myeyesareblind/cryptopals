@@ -1,17 +1,17 @@
 (ns cryptopals.vecutils)
 
 (defn seq-xor-seq
-  [x y count-fn get-fn]
-  (vec (let [nx (count-fn x)
-             ny (count-fn y)]
-         (for [i (range (max nx ny))]
-           (bit-xor
-            (get-fn x (rem i nx))
-            (get-fn y (rem i ny)))))))
+  [x y]
+  (let [nx (count x)
+        ny (count y)]
+    (for [i (range (max nx ny))]
+      (bit-xor
+       (get x (rem i nx))
+       (get y (rem i ny))))))
 
 (defn bytear-xor-bytear
   [x y]
-  (byte-array (seq-xor-seq x y alength aget)))
+  (byte-array (seq-xor-seq x y)))
 
 (defn vec-xor-vec 
   [x y]
