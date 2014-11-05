@@ -32,6 +32,17 @@
               res)
              (inc i)))))
 
+(defn duplicate-block-in-seq
+  [inseq szblock]
+  (loop [part (partition szblock inseq)
+         hash {}]
+    (if (empty? part)
+      nil
+      (if (hash (first part))
+        (first part)
+        (recur (rest part)
+               (assoc hash (first part) 1))))))
+
 (defn random-list
   [nelements min max]
   (doall (repeatedly nelements #(- (rand-int (+ (Math/abs min) (Math/abs max)))

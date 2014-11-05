@@ -1,4 +1,5 @@
 (ns cryptopals.strutils
+  (:require [clojure.string :as String])
   (:import [org.apache.commons.codec.binary Base64]
            [org.apache.commons.codec.binary StringUtils]))
 
@@ -23,7 +24,7 @@
 
 (defn base64-decode
   [s]
-  (Base64/decodeBase64 s))
+  (vec (Base64/decodeBase64 s)))
 
 (defn base64-encode
   [v]
@@ -39,3 +40,19 @@
                    (= % 0x20)
                    (= % 0x13))
                  v)))
+
+(defn kvdecode
+  [s]
+  (for [subs (String/split s #"&")]
+    (String/split subs #"=")))
+
+(defn kvencode
+  [alist]
+  (->>
+   (map #(str (first %)
+              "=" 
+              (String/replace (second %)
+                              #"[=&]"
+                              ""))
+        alist)
+   (String/join "&")))

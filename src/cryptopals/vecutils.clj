@@ -1,21 +1,17 @@
 (ns cryptopals.vecutils)
 
-(defn seq-xor-seq
+(defn vec-xor-vec
   [x y]
   (let [nx (count x)
         ny (count y)]
-    (for [i (range (max nx ny))]
-      (bit-xor
-       (get x (rem i nx))
-       (get y (rem i ny))))))
+    (vec (for [i (range (max nx ny))]
+           (bit-xor
+            (get x (rem i nx))
+            (get y (rem i ny)))))))
 
 (defn bytear-xor-bytear
   [x y]
   (byte-array (seq-xor-seq x y)))
-
-(defn vec-xor-vec 
-  [x y]
-  (seq-xor-seq x y count get))
   
 (defn ham-dist
   ([x y] 
@@ -55,7 +51,22 @@
 
 (defn PKCS7-pad
   [v to-len]
+  (println "count " (count v) " to len " to-len)
   (if (>= (count v) to-len)
     v
-    (concat v (repeat (- to-len (count v))
-                      (- to-len (count v))))))
+    (let [rs (concat v (repeat (- to-len (count v))
+                      (- to-len (count v))))]
+      (println " got " (count rs))
+      rs)))
+
+(defn validate-PKCS7-pad
+  [v key-length]
+  (throw (javax.crypto.BadPaddingException. "Given final block not properly padded"))
+  (if-not (= 0 (rem (count v) key-length))
+    false
+    (let [last-v (last (partition key-length v))
+          last-b (last last-v)]
+      (if (= 0 last-b)
+        false
+        (>= (count (take-while #(= % last-b) (reverse last-v)))
+            last-b)))))
