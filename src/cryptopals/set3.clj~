@@ -1,0 +1,6 @@
+(ns cryptopals.set3
+  (:use [clojure.java.io]
+        [cryptopals.strutils]
+        [cryptopals.vecutils]
+        [cryptopals.sequtils]
+        [cryptopals.aes]))

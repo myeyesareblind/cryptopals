@@ -1,17 +1,23 @@
 (ns cryptopals.vecutils)
 
+(defn inc-at-index
+  [v i]
+  (assoc v i (inc (get v i))))
+
+(defn byte-range
+  []
+  (range -128 127))
+
 (defn vec-xor-vec
   [x y]
-  (let [nx (count x)
+  (let [vx (vec x)
+        vy (vec y)
+        nx (count x)
         ny (count y)]
-    (vec (for [i (range (max nx ny))]
+    (vec (for [i (range nx)]
            (bit-xor
-            (get x (rem i nx))
-            (get y (rem i ny)))))))
-
-(defn bytear-xor-bytear
-  [x y]
-  (byte-array (seq-xor-seq x y)))
+            (get vx (rem i nx))
+            (get vy (rem i ny)))))))
   
 (defn ham-dist
   ([x y] 

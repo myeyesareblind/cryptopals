@@ -30,7 +30,7 @@ dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
 YnkK"))
 
 (def random-key (random-byte-list 16))
-(def iv (random-byte-list 16))
+(def iv (vec (random-byte-list 16)))
 (def random-prefix (random-byte-list 2))
 
 (defn oracle-encrypt
@@ -129,7 +129,8 @@ YnkK"))
 (def prepend-str "comment1=cooking%20MCs;userdata=")
 (def append-str ";comment2=%20like%20a%20pound%20of%20bacon")
 (def hack-str ";admin=true;AAAA")
-(def zero48 (vec (repeatedly 48 (fn [] 0))))
+(def zero48 (repeated 0 48))
+(def zero16 (repeated 0 16))
 
 (defn encrypt-query
   [userdata]
@@ -152,11 +153,12 @@ YnkK"))
   (let [zero-enc (encrypt-query zero48)
         prev-enc-block (vec (nth (partition 16 zero-enc) 2))
         cur-enc-block (vec (nth (partition 16 zero-enc) 3))
-        before-xor (vec-xor-vec prev-enc-block cur-enc-block)
+        before-xor (vec-xor-vec prev-enc-block zero16)
         xor-block (vec-xor-vec before-xor (str->vec hack-str))]
     (let [dec (flatten (concat (first (split-at 32 zero-enc))
-                               (xor-block)
-                               (cur-enc-block)
-                               (rest (split-at 64))))
+                               xor-block
+                               cur-enc-block
+                               (rest (split-at 64 zero-enc))))
           dec-str (decrypt-query dec)]
-      (println dec-str))))
+      (re-find (re-pattern ";admin=true;") dec-str))))
+

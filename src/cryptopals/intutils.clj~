@@ -1,0 +1,8 @@
+(ns cryptopals.intutils)
+
+(defn int64-to-byte-array
+  [int-v]
+  (loop [v (vec (.toByteArray (BigInteger/valueOf int-v)))]
+    (if (= 8 (count v))
+      v
+      (recur (conj v 0)))))

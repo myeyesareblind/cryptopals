@@ -1,5 +1,15 @@
 (ns cryptopals.sequtils)
 
+(defn one-that-fits
+  [comp-fn seq]
+  (reduce (fn [acc x]
+            (if acc
+              acc
+              (when (comp-fn x)
+                x)))
+          nil
+          seq))
+
 (defn min-vals-in-map
   [m ntimes]
   (loop [m m
@@ -51,3 +61,8 @@
 (defn random-byte-list
   [nelements]
   (random-list nelements -128 128))
+
+(defn repeated
+  [what num]
+  (vec (repeatedly num (fn [] what))))
+
