@@ -163,3 +163,15 @@
 
 (def cc-data [118 -47 -53 75 -81 -94 70 -30 -29 -81 3 93])
 
+(def ch-20-path "/Users/myeyesareblind/Downloads/20.txt")
+(def ch-20-plain-data (map #(base64-decode %) (.split #"\n" (slurp ch-20-path))))
+(def ch-20-data (map #(aes-ctr-crypt % ch-17-pass nonce) ch-20-plain-data))
+
+(defn challenge-20
+  []
+  (let [min-len (reduce min (map #(count %) ch-20-data))
+        column-data (for [i (range min-len)]
+                      (map #(nth % i) ch-20-data))
+        key-column (map #(detect-single-char-xor %) column-data)]
+    (doseq [col ch-20-data]
+      (println (vec->str (vec-xor-vec col key-column))))))

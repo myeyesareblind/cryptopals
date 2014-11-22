@@ -1,5 +1,6 @@
 (ns cryptopals.intutils
-  (:use [cryptopals.vecutils]))
+  (:use [clojure.set]
+        [cryptopals.vecutils]))
 
 (defn int64-to-byte-array
   [num]

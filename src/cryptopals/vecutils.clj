@@ -1,4 +1,5 @@
-(ns cryptopals.vecutils)
+(ns cryptopals.vecutils
+  (:use [cryptopals.strutils]))
 
 (defn inc-at-index
   [v i]
@@ -7,6 +8,16 @@
 (defn byte-range
   []
   (range -128 127))
+
+(defn detect-single-char-xor
+  [v]
+  (let [best-key (reduce (fn [x y]
+                           (if (> (vec-score (map #(bit-xor x %) v))
+                                  (vec-score (map #(bit-xor y %) v)))
+                             x
+                             y))
+                         (byte-range))]
+    best-key))
 
 (defn vec-xor-vec
   [x y]
